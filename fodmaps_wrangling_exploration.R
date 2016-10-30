@@ -57,6 +57,10 @@ df.date <- left_join(dfF.date, dfS.date, by = "Date")
 df.date$Symptoms[is.na(df.date$Symptoms)] <- 0 # Impute 0
 df.date <- df.date[order(df.date$Date), ]
 
+## Save
+setwd("C:/Users/Muhsin Karim/Documents/GitHub/fodmaps")
+write.csv(df.date, file = "merged.csv", row.names = F)
+
 
 ### Set days to count back
 
@@ -127,6 +131,34 @@ sort(unique(df.date$Date[which(df.date$Food %in% reallyBadFoods)]))
 sort(table(weekdays(sort(unique(df.date$Date[which(df.date$Food %in% reallyBadFoods)])))), decreasing = T)
 
 
+### Create and save Food and Symptoms datetimes
+
+## Select columns and rename
+dfF <- dfFoods %>%
+    select(Datetime,
+           Item = Food.Ingredient)
+
+dfS <- dfSymptoms %>%
+    select(Datetime,
+           Item = Symptoms)
+
+## Rename Symptom flag
+dfS$Item <- "INTOLERANCE SYMPTOMS"
+
+## Datetimes
+
+## Bind
+dfEvents <- rbind.data.frame(dfF, dfS)
+dfEvents <- dfEvents[order(dfEvents$Datetime), ]
+
+## Save
+setwd("C:/Users/Muhsin Karim/Documents/GitHub/fodmaps")
+write.csv(dfEvents, file = "events.csv", row.names = F)
+
+
+
+
+#--------------------------------------------------------------------------------------------------
 ### Calendar plots example
 # https://www.r-bloggers.com/calendar-charts-with-googlevis/
 
